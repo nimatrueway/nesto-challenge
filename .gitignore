@@ -1,3 +1,12 @@
+# IDE
+.idea
 .vscode
-**/.DS_Store
+*.iml
+
+# Build
 **/npm-debug.log
+**/bun.lockb
+service/vendor
+
+# OS
+**/.DS_Store

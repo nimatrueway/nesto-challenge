@@ -1,0 +1,10 @@
+database:
+    dsn: "host=localhost port=5432 user=postgres password=password123 dbname=readcommend sslmode=disable"
+    max_connections: 10
+    max_connection_idle_time: 5m
+
+log:
+    level: debug
+
+server:
+    bind: :5001
