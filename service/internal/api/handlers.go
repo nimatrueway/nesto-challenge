@@ -1,10 +1,13 @@
 package api
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-playground/validator/v10"
 	"net/http"
 	"readcommend/internal/service"
+	"strconv"
+	"strings"
 )
 
 type Server struct {
@@ -15,18 +18,34 @@ func NewServer(service service.BookService) *Server {
 	return &Server{service: service}
 }
 
+type CsvInt struct {
+	value []int
+}
+
+func (idl *CsvInt) UnmarshalParam(param string) error {
+	parts := strings.Split(param, ",")
+	for _, part := range parts {
+		intPart, err := strconv.Atoi(part)
+		if err != nil {
+			return fmt.Errorf("\"%s\" is excepted to be a comma-separated list of integers; invalid integer \"%s\"", param, part)
+		}
+		idl.value = append(idl.value, intPart)
+	}
+	return nil
+}
+
 type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
 type BookParams struct {
-	Authors  []int `form:"authors" binding:"omitempty"`
-	Genres   []int `form:"genres" binding:"omitempty"`
-	MinPages int   `form:"min-pages" binding:"omitempty,min=1,max=10000"`
-	MaxPages int   `form:"max-pages" binding:"omitempty,min=1,max=10000"`
-	MinYear  int   `form:"min-year" binding:"omitempty,min=1800,max=2100"`
-	MaxYear  int   `form:"max-year" binding:"omitempty,min=1800,max=2100"`
-	Limit    int   `form:"limit" binding:"omitempty,min=1"`
+	Authors  CsvInt `form:"authors" binding:"omitempty"`
+	Genres   CsvInt `form:"genres" binding:"omitempty"`
+	MinPages int    `form:"min-pages" binding:"omitempty,min=1,max=10000"`
+	MaxPages int    `form:"max-pages" binding:"omitempty,min=1,max=10000"`
+	MinYear  int    `form:"min-year" binding:"omitempty,min=1800,max=2100"`
+	MaxYear  int    `form:"max-year" binding:"omitempty,min=1800,max=2100"`
+	Limit    int    `form:"limit" binding:"omitempty,min=1"`
 }
 
 func (s *Server) GetBooks(c *gin.Context) {
@@ -36,7 +55,7 @@ func (s *Server) GetBooks(c *gin.Context) {
 		return
 	}
 
-	books, err := s.service.GetBooks(params.Authors, params.Genres, params.MinPages, params.MaxPages, params.MinYear, params.MaxYear, params.Limit)
+	books, err := s.service.GetBooks(params.Authors.value, params.Genres.value, params.MinPages, params.MaxPages, params.MinYear, params.MaxYear, params.Limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "failed to find books"})
 		return
