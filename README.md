@@ -101,6 +101,8 @@ You should see the front-end app appear, with all components displaying error me
 
 # Deploying and running back-end microservice
 
+TODO: add containerization and integrate to docker-compose
+TODO: add more validation for non-existent authors or genres
 TODO: add unit-test
 TODO: add open-telemetry and context logging
 TODO: add better error handling
