@@ -6,10 +6,13 @@ import (
 	"log/slog"
 )
 
-func NewRouter(s *Server) *gin.Engine {
+func NewRouter(s *Server, middlewares []gin.HandlerFunc) *gin.Engine {
 	router := gin.Default()
 	router.Use(sloggin.New(slog.Default()))
 	router.Use(gin.Recovery())
+	for _, m := range middlewares {
+		router.Use(m)
+	}
 	router.GET("/api/v1/books", s.GetBooks)
 	router.GET("/api/v1/authors", s.GetAuthors)
 	router.GET("/api/v1/genres", s.GetGenres)

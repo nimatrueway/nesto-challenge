@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/lmittmann/tint"
 	"github.com/orandin/slog-gorm"
 	"gorm.io/driver/postgres"
@@ -47,7 +48,11 @@ func Run() {
 
 	// configure database connection pool
 	sqlDB, err := db.DB()
-	defer sqlDB.Close()
+	defer func() {
+		if err := sqlDB.Close(); err != nil {
+			slog.Error("failed to close sql.DB", err)
+		}
+	}()
 	if err != nil {
 		log.Panicf("failed to get sql.DB: %#v", err)
 	}
@@ -57,7 +62,7 @@ func Run() {
 	// instantiate router
 	repo := repository.NewPgRepository(db)
 	server := api.NewServer(repo)
-	router := api.NewRouter(server)
+	router := api.NewRouter(server, []gin.HandlerFunc{api.CORSMiddleware(config.Server.CorsAllowedOrigins)})
 
 	// start server
 	slog.Info("Starting server", slog.String("address", config.Server.Host))

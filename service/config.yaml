@@ -7,4 +7,5 @@ log:
     level: debug
 
 server:
+    cors_allowed_origins: [ "http://localhost:8080" ]
     bind: :5001

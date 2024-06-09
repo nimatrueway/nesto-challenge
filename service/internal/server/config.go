@@ -16,7 +16,8 @@ type Config struct {
 		Level string `mapstructure:"level"`
 	} `mapstructure:"log"`
 	Server struct {
-		Host string `mapstructure:"bind"`
+		Host               string   `mapstructure:"bind"`
+		CorsAllowedOrigins []string `mapstructure:"cors_allowed_origins"`
 	} `mapstructure:"server"`
 }
 
