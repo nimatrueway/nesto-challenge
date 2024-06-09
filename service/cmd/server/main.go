@@ -1,9 +1,9 @@
 package main
 
 import (
-	"readcommend/internal/server"
+	"readcommend/internal/bootstrap"
 )
 
 func main() {
-	server.Run()
+	bootstrap.Run()
 }

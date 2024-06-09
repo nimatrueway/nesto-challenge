@@ -1,4 +1,4 @@
-package server
+package bootstrap
 
 import (
 	"github.com/gin-gonic/gin"
@@ -13,6 +13,7 @@ import (
 	"os"
 	"readcommend/internal/api"
 	"readcommend/internal/repository"
+	"readcommend/internal/service"
 )
 
 func Run() {
@@ -60,8 +61,9 @@ func Run() {
 	sqlDB.SetConnMaxIdleTime(config.Database.MaxConnIdleTime)
 
 	// instantiate router
-	repo := repository.NewPgRepository(db)
-	server := api.NewServer(repo)
+	bookRepo := repository.NewBookRepository(db)
+	bookService := service.NewBookService(bookRepo)
+	server := api.NewServer(bookService)
 	router := api.NewRouter(server, []gin.HandlerFunc{api.CORSMiddleware(config.Server.CorsAllowedOrigins)})
 
 	// start server

@@ -101,4 +101,7 @@ You should see the front-end app appear, with all components displaying error me
 
 # Deploying and running back-end microservice
 
-WRITE YOUR DOCUMENTATION HERE
+TODO: add unit-test
+TODO: add open-telemetry and context logging
+TODO: add better error handling
+TODO: add run instructions, and explain design decisions

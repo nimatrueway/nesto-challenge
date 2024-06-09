@@ -5,7 +5,7 @@ import (
 	"readcommend/internal/repository/model"
 )
 
-type Repository interface {
+type BookRepository interface {
 	GetBooks(authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]model.Book, error)
 	GetAuthors() ([]model.Author, error)
 	GetGenres() ([]model.Genre, error)
@@ -13,17 +13,17 @@ type Repository interface {
 	GetEras() ([]model.Era, error)
 }
 
-type PgRepository struct {
+type BookRepositoryImpl struct {
 	db *gorm.DB
 }
 
-func NewPgRepository(db *gorm.DB) *PgRepository {
-	return &PgRepository{
+func NewBookRepository(db *gorm.DB) *BookRepositoryImpl {
+	return &BookRepositoryImpl{
 		db: db,
 	}
 }
 
-func (r *PgRepository) GetBooks(authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]model.Book, error) {
+func (r *BookRepositoryImpl) GetBooks(authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]model.Book, error) {
 	var books []model.Book
 
 	query := r.db
@@ -55,25 +55,25 @@ func (r *PgRepository) GetBooks(authors, genres []int, minPages, maxPages, minYe
 	return books, err
 }
 
-func (r *PgRepository) GetAuthors() ([]model.Author, error) {
+func (r *BookRepositoryImpl) GetAuthors() ([]model.Author, error) {
 	var authors []model.Author
 	err := r.db.Find(&authors).Error
 	return authors, err
 }
 
-func (r *PgRepository) GetGenres() ([]model.Genre, error) {
+func (r *BookRepositoryImpl) GetGenres() ([]model.Genre, error) {
 	var genres []model.Genre
 	err := r.db.Find(&genres).Error
 	return genres, err
 }
 
-func (r *PgRepository) GetSizes() ([]model.Size, error) {
+func (r *BookRepositoryImpl) GetSizes() ([]model.Size, error) {
 	var sizes []model.Size
 	err := r.db.Find(&sizes).Error
 	return sizes, err
 }
 
-func (r *PgRepository) GetEras() ([]model.Era, error) {
+func (r *BookRepositoryImpl) GetEras() ([]model.Era, error) {
 	var eras []model.Era
 	err := r.db.Find(&eras).Error
 	return eras, err

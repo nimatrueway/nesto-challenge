@@ -4,15 +4,15 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-playground/validator/v10"
 	"net/http"
-	"readcommend/internal/repository"
+	"readcommend/internal/service"
 )
 
 type Server struct {
-	repo repository.Repository
+	service service.BookService
 }
 
-func NewServer(repo repository.Repository) *Server {
-	return &Server{repo: repo}
+func NewServer(service service.BookService) *Server {
+	return &Server{service: service}
 }
 
 type ErrorResponse struct {
@@ -36,7 +36,7 @@ func (s *Server) GetBooks(c *gin.Context) {
 		return
 	}
 
-	books, err := s.repo.GetBooks(params.Authors, params.Genres, params.MinPages, params.MaxPages, params.MinYear, params.MaxYear, params.Limit)
+	books, err := s.service.GetBooks(params.Authors, params.Genres, params.MinPages, params.MaxPages, params.MinYear, params.MaxYear, params.Limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "failed to find books"})
 		return
@@ -46,7 +46,7 @@ func (s *Server) GetBooks(c *gin.Context) {
 }
 
 func (s *Server) GetAuthors(c *gin.Context) {
-	authors, err := s.repo.GetAuthors()
+	authors, err := s.service.GetAuthors()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "failed to get authors"})
 		return
@@ -56,7 +56,7 @@ func (s *Server) GetAuthors(c *gin.Context) {
 }
 
 func (s *Server) GetGenres(c *gin.Context) {
-	genres, err := s.repo.GetGenres()
+	genres, err := s.service.GetGenres()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "failed to get genres"})
 		return
@@ -66,7 +66,7 @@ func (s *Server) GetGenres(c *gin.Context) {
 }
 
 func (s *Server) GetSizes(c *gin.Context) {
-	sizes, err := s.repo.GetSizes()
+	sizes, err := s.service.GetSizes()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "failed to get sizes"})
 		return
@@ -76,7 +76,7 @@ func (s *Server) GetSizes(c *gin.Context) {
 }
 
 func (s *Server) GetEras(c *gin.Context) {
-	eras, err := s.repo.GetEras()
+	eras, err := s.service.GetEras()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "failed to get eras"})
 		return
