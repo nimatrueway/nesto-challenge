@@ -4,9 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	sloggin "github.com/samber/slog-gin"
 	"log/slog"
+	"readcommend/internal/controller"
 )
 
-func NewRouter(s *Server, middlewares []gin.HandlerFunc) *gin.Engine {
+func NewRouter(s *controller.Controller, middlewares []gin.HandlerFunc) *gin.Engine {
 	router := gin.Default()
 	router.Use(sloggin.New(slog.Default()))
 	router.Use(gin.Recovery())

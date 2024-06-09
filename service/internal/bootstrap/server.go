@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"readcommend/internal/api"
+	"readcommend/internal/controller"
 	"readcommend/internal/repository"
 	"readcommend/internal/service"
 )
@@ -63,7 +64,7 @@ func Run() {
 	// instantiate router
 	bookRepo := repository.NewBookRepository(db)
 	bookService := service.NewBookService(bookRepo)
-	server := api.NewServer(bookService)
+	server := controller.NewController(bookService)
 	router := api.NewRouter(server, []gin.HandlerFunc{api.CORSMiddleware(config.Server.CorsAllowedOrigins)})
 
 	// start server
