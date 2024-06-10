@@ -101,9 +101,28 @@ You should see the front-end app appear, with all components displaying error me
 
 # Deploying and running back-end microservice
 
-TODO: add containerization and integrate to docker-compose
-TODO: add more validation for non-existent authors or genres
-TODO: add unit-test
-TODO: add open-telemetry and context logging
-TODO: add better error handling
-TODO: add run instructions, and explain design decisions
+# Database schema migration
+
+Database schema migration is implemented using [goose](https://github.com/pressly/goose). Migration scripts are located
+in the `cmd/migrate/scripts` directory. To run migration scripts, run the following command:
+
+```
+go run ./cmd/migration
+```
+
+# Running the service
+
+The service runtime configuration is defined in the `config.yaml` file. The service can be run using the following:
+
+```
+go run ./cmd/service
+```
+
+# Future works
+
+- [ ] add containerization and integrate to docker-compose
+- [ ] add more validation for non-existent authors or genres
+- [ ] add unit-test
+- [ ] add open-telemetry and context logging
+- [ ] add better error handling
+- [ ] add run instructions, and explain design decisions
