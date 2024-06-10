@@ -145,6 +145,8 @@ mockery
 
 - [ ] add author query optimization
 - [ ] impose limit on both authors and books results if not specified
+- [ ] add linters
+- [ ] add makefile
 - [ ] add containerization and integrate to docker-compose
 - [ ] add more validation for non-existent authors or genres
 - [ ] add open-telemetry and context logging
