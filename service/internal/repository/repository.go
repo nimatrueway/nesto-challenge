@@ -51,7 +51,7 @@ func (r *BookRepositoryImpl) GetBooks(authors, genres []int, minPages, maxPages,
 		query = query.Limit(limit)
 	}
 
-	err := query.Find(&books).Error
+	err := query.Order("book.rating desc, book.id asc").Find(&books).Error
 	return books, err
 }
 

@@ -70,6 +70,6 @@ func Run() {
 	// start server
 	slog.Info("Starting server", slog.String("address", config.Server.Host))
 	if err := http.ListenAndServe(config.Server.Host, router); err != nil {
-		log.Fatalf("failed to start server: %#v", err)
+		slog.Error("failed to start server.", err)
 	}
 }
