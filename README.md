@@ -101,28 +101,50 @@ You should see the front-end app appear, with all components displaying error me
 
 # Deploying and running back-end microservice
 
-# Database schema migration
+change current directory to 'service' directory by running:
 
-Database schema migration is implemented using [goose](https://github.com/pressly/goose). Migration scripts are located
-in the `cmd/migrate/scripts` directory. To run migration scripts, run the following command:
+```
+cd service
+```
+
+## Database schema migration
+
+Skip this step if you already have the database schema set up. Database schema migration is implemented
+using [goose](https://github.com/pressly/goose). Migration scripts are located in the `cmd/migrate/scripts` directory.
+To run migration scripts, run the following command:
 
 ```
 go run ./cmd/migration
 ```
 
-# Running the service
+## Running the service
 
-The service runtime configuration is defined in the `config.yaml` file. The service can be run using the following:
+The service runtime configuration is defined in the `config.yaml` file, through which you can configure the database
+connection, server port, logging and other settings. The service can be run using the following:
 
 ```
 go run ./cmd/service
+```
+
+## Running tests
+
+```
+go test ./...
+```
+
+## Developing tests
+
+To generate mocks of interfaces for testing, run the following command:
+
+```
+go install github.com/vektra/mockery/v2@v2.43.2
+mockery
 ```
 
 # Future works
 
 - [ ] add containerization and integrate to docker-compose
 - [ ] add more validation for non-existent authors or genres
-- [ ] add unit-test
 - [ ] add open-telemetry and context logging
 - [ ] add better error handling
 - [ ] add run instructions, and explain design decisions

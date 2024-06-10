@@ -1,0 +1,7 @@
+dir: "{{.InterfaceDir}}/mocks"
+outpkg: mocks
+with-expecter: true
+packages:
+    readcommend/internal/repository:
+        interfaces:
+            BookRepository:

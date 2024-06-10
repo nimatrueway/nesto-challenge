@@ -16,8 +16,8 @@ func NewController(service service.BookService) *Controller {
 }
 
 type BookParams struct {
-	Authors  CsvInt `form:"authors" binding:"omitempty"`
-	Genres   CsvInt `form:"genres" binding:"omitempty"`
+	Authors  CsvIds `form:"authors" binding:"omitempty"`
+	Genres   CsvIds `form:"genres" binding:"omitempty"`
 	MinPages int    `form:"min-pages" binding:"omitempty,min=1,max=10000"`
 	MaxPages int    `form:"max-pages" binding:"omitempty,min=1,max=10000"`
 	MinYear  int    `form:"min-year" binding:"omitempty,min=1800,max=2100"`
