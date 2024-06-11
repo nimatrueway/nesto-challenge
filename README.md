@@ -1,45 +1,14 @@
 # Readcommend
 
-Readcommend is a book recommendation web app for the true book aficionados and disavowed human-size bookworms. It allows to search for book recommendations with best ratings, based on different search criteria.
-
-# Instructions
-
-The front-end single-page app has already been developed using Node/TypeScript/React (see `/app`) and a PostgreSQL database with sample data is also provided (see `/migrate.*`). Your mission - if you accept it - is to implement a back-end microservice that will fetch the data from the database and serve it to the front-end app.
-
-- In the `service` directory, write a back-end microservice, using idiomatic golang, that listens on `http://localhost:5001`.
-- Write multiple REST endpoints, all under the `/api/v1` route, as specified in the `/open-api.yaml` swagger file.
-- The most important endpoint, `/books`, must return book search results in order of descending ratings (from 5.0 to 1.0 stars) and filtered according to zero, one or multiple user selected criteria: author(s), genre(s), min/max pages, start/end publication date (the "era"). A maximum number of results can also be specified.
-- It's OK to use libraries for http handling/routing and SQL (ie: query builders), but try to refrain from relying heavily on end-to-end frameworks (ie: Django) and ORMs that handle everything and leave little room to showcase your coding skills! ;)
-- Write some documentation (ie: at the end of this file) to explain how to deploy and run your service. *Please assume that the reviewer should be able to run your solution without needing to install extra dependencies on his machine.*
-- Keep your code simple, clean and well-organized.
-- During development commit and push regularly to the CodeSubmit git repository and, when you are done, submit your assignment in CodeSubmit.
-- Don't hesitate to come back to us with any questions along the way. We prefer that you ask questions, rather than assuming and misinterpreting requirements.
-- You have no time limit to complete this exercise, but the more time you take, the higher our expectations in terms of quality and completeness.
-- You will be evaluated mainly based on how well you respect the above instructions. Please refer to the **Expectations** section below for more details on how you will be evaluated.
-
-# Expectations
-
-nesto recruits for all proficiency levels. Depending on your experience and the position you are applying for, what we expect to see in the test will differ. We do, however, understand that you may have a life (some people do). If you don't have the time to respect all the instructions, simply do your best and focus on what you deem most important.
-
-**Junior Submission**
-
-- Provides a solution that is bug free, fast and meets all the requirements listed above.
-- Code provided shows a good proficiency in the chosen language.
-- Shows good reflexes with regards to 3rd party dependencies. You should add dependencies that add value to your solution without solving everything for you.
-- Basic testing of the core functionalities.
-
-**Senior Submission**
-
-We expect everything from a *Junior Submission* and that you treat this as production ready code without necessarily providing full test coverage
-- Solution is architectured properly to allow for adequate test coverage and future extensions.
-- Each layer of the provided solution must be protected against typical attack vectors. You should **NOT** rely on your API contract to protect you from malicious inputs.
-- Showcases the type of tests needed to validate your architectural choices and to provide confidence that your solution satisfies the 'business' and performance requirements.
+Readcommend is a book recommendation web app for the true book aficionados and disavowed human-size bookworms. It allows
+to search for book recommendations with best ratings, based on different search criteria.
 
 # Development environment
 
 ## Docker Desktop
 
-Make sure you have the latest version of Docker Desktop installed, with sufficient memory allocated to it, otherwise you might run into errors such as:
+Make sure you have the latest version of Docker Desktop installed, with sufficient memory allocated to it, otherwise you
+might run into errors such as:
 
 ```
 app_1         | Killed
@@ -47,11 +16,23 @@ app_1         | npm ERR! code ELIFECYCLE
 app_1         | npm ERR! errno 137.
 ```
 
-If that happens, first try running the command again, but if it doesn't help, try increasing the amount of memory allocated to Docker in Preferences > Resources.
+If that happens, first try running the command again, but if it doesn't help, try increasing the amount of memory
+allocated to Docker in Preferences > Resources.
 
-## Starting front-end app and database
+## Colima
 
-In this repo's root dir, run this command to start the front-end app (on port 8080) and PostgreSQL database (on port 5432):
+If you are using Colima as a substitute for Docker Desktop, you might run into an issue
+with [finding socket address](https://github.com/testcontainers/testcontainers-go/issues/2264#issuecomment-2131233614)
+while running testcontainers-go on macOS. That can be worked around by running the following command:
+
+```
+sudo ln -sf $HOME/.colima/default/docker.sock /var/run/docker.sock
+```
+
+## Starting front-end app, back-end app and database
+
+In this repo's root dir, run this command to start the front-end app (on port 8080), back-end app (on port 5001), and
+PostgreSQL database (on port 5432):
 
 ```bash
 $ docker-compose up --build
@@ -97,9 +78,10 @@ Point your browser to http://localhost:8080
 
 Be patient, the first time it might take up to 1 or 2 minutes for parcel to build and serve the front-end app.
 
-You should see the front-end app appear, with all components displaying error messages because the back-end service does not exist yet.
+You should see the front-end app appear, with all components displaying error messages because the back-end service does
+not exist yet.
 
-# Deploying and running back-end microservice
+# Developing back-end service
 
 change current directory to 'service' directory by running:
 
@@ -114,7 +96,7 @@ using [goose](https://github.com/pressly/goose). Migration scripts are located i
 To run migration scripts, run the following command:
 
 ```
-go run ./cmd/migration
+make run-db-migrations
 ```
 
 ## Running the service
@@ -123,32 +105,26 @@ The service runtime configuration is defined in the `config.yaml` file, through 
 connection, server port, logging and other settings. The service can be run using the following:
 
 ```
-go run ./cmd/service
+make run
+```
+
+## Development tools and dependencies
+
+To install development tools and dependencies, run the following:
+
+```
+make deps
 ```
 
 ## Running tests
 
 ```
-go test ./...
-```
-
-## Developing tests
-
-To generate mocks of interfaces for testing, run the following command:
-
-```
-go install github.com/vektra/mockery/v2@v2.43.2
-mockery
+make test
 ```
 
 # Future works
 
-- [ ] add author query optimization
-- [ ] impose limit on both authors and books results if not specified
-- [ ] add linters
-- [ ] add makefile
-- [ ] add containerization and integrate to docker-compose
 - [ ] add more validation for non-existent authors or genres
 - [ ] add open-telemetry and context logging
 - [ ] add better error handling
-- [ ] add run instructions, and explain design decisions
+- [ ] explain design decisions
