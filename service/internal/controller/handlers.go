@@ -57,6 +57,7 @@ func (s *Controller) GetBooks(c *gin.Context) {
 }
 
 type AuthorParams struct {
+	Search string `binding:"omitempty"               form:"search"`
 	Limit  int    `binding:"omitempty,min=1,max=100" form:"limit,default=100"`
 }
 
@@ -67,7 +68,7 @@ func (s *Controller) GetAuthors(c *gin.Context) {
 		return
 	}
 
-	authors, err := s.service.GetAuthors(params.Limit)
+	authors, err := s.service.GetAuthors(params.Search, params.Limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "failed to get authors"})
 		return

@@ -7,7 +7,7 @@ import (
 
 type BookService interface {
 	GetBooks(authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]dto.Book, error)
-	GetAuthors(limit int) ([]dto.Author, error)
+	GetAuthors(search string, limit int) ([]dto.Author, error)
 	GetGenres() ([]dto.Genre, error)
 	GetSizes() ([]dto.Size, error)
 	GetEras() ([]dto.Era, error)
@@ -35,8 +35,8 @@ func (s *BookServiceImpl) GetBooks(authors, genres []int, minPages, maxPages, mi
 	return result, nil
 }
 
-func (s *BookServiceImpl) GetAuthors(limit int) ([]dto.Author, error) {
-	authors, err := s.repo.GetAuthors(limit)
+func (s *BookServiceImpl) GetAuthors(search string, limit int) ([]dto.Author, error) {
+	authors, err := s.repo.GetAuthors(search, limit)
 	if err != nil {
 		return nil, err
 	}

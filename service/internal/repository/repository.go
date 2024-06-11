@@ -1,13 +1,17 @@
 package repository
 
 import (
-	"gorm.io/gorm"
+	"regexp"
+	"strings"
+
 	"readcommend/internal/repository/model"
+
+	"gorm.io/gorm"
 )
 
 type BookRepository interface {
 	GetBooks(authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]model.Book, error)
-	GetAuthors(limit int) ([]model.Author, error)
+	GetAuthors(search string, limit int) ([]model.Author, error)
 	GetGenres() ([]model.Genre, error)
 	GetSizes() ([]model.Size, error)
 	GetEras() ([]model.Era, error)
@@ -55,10 +59,19 @@ func (r *BookRepositoryImpl) GetBooks(authors, genres []int, minPages, maxPages,
 	return books, err
 }
 
-func (r *BookRepositoryImpl) GetAuthors(limit int) ([]model.Author, error) {
+func (r *BookRepositoryImpl) GetAuthors(search string, limit int) ([]model.Author, error) {
 	var authors []model.Author
 
 	query := r.db
+
+	if search != "" {
+		allWords := regexp.MustCompile(`\S+`).FindAllString(strings.ToLower(search), -1)
+		for i, word := range allWords {
+			allWords[i] = word + ":*"
+		}
+		search = strings.Join(allWords, " & ")
+		query = query.Where("to_tsvector('simple', first_name || ' ' || last_name) @@ to_tsquery(?)", search)
+	}
 
 	if limit > 0 {
 		query = query.Limit(limit)

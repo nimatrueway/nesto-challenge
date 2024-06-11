@@ -43,6 +43,7 @@ CREATE INDEX book_rating ON book USING btree (rating);
 CREATE INDEX book_pages ON book USING btree (pages);
 CREATE INDEX book_genre_id ON book USING btree (genre_id);
 CREATE INDEX book_author_id ON book USING btree (author_id);
+CREATE INDEX author_full_name_idx ON author USING GIN (to_tsvector('simple', first_name || ' ' || last_name));
 
 INSERT INTO era (id, title, min_year, max_year)
 VALUES
