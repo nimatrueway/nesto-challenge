@@ -1,10 +1,12 @@
 package api
 
 import (
+	"log/slog"
+
+	"readcommend/internal/controller"
+
 	"github.com/gin-gonic/gin"
 	sloggin "github.com/samber/slog-gin"
-	"log/slog"
-	"readcommend/internal/controller"
 )
 
 func NewRouter(s *controller.Controller, middlewares []gin.HandlerFunc) *gin.Engine {

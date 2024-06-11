@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
-	_ "github.com/go-playground/validator/v10"
 	"net/http"
+
 	"readcommend/internal/service"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Controller struct {
@@ -16,13 +17,13 @@ func NewController(service service.BookService) *Controller {
 }
 
 type BookParams struct {
-	Authors  CsvIds `form:"authors" binding:"omitempty"`
-	Genres   CsvIds `form:"genres" binding:"omitempty"`
-	MinPages int    `form:"min-pages" binding:"omitempty,min=1,max=10000"`
-	MaxPages int    `form:"max-pages" binding:"omitempty,min=1,max=10000"`
-	MinYear  int    `form:"min-year" binding:"omitempty,min=1800,max=2100"`
-	MaxYear  int    `form:"max-year" binding:"omitempty,min=1800,max=2100"`
-	Limit    int    `form:"limit,default=100" binding:"omitempty,min=1,max=100"`
+	Authors  CsvIDs `binding:"omitempty"                   form:"authors"`
+	Genres   CsvIDs `binding:"omitempty"                   form:"genres"`
+	MinPages int    `binding:"omitempty,min=1,max=10000"   form:"min-pages"`
+	MaxPages int    `binding:"omitempty,min=1,max=10000"   form:"max-pages"`
+	MinYear  int    `binding:"omitempty,min=1800,max=2100" form:"min-year"`
+	MaxYear  int    `binding:"omitempty,min=1800,max=2100" form:"max-year"`
+	Limit    int    `binding:"omitempty,min=1,max=100"     form:"limit,default=100"`
 }
 
 func (s *Controller) GetBooks(c *gin.Context) {

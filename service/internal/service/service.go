@@ -3,6 +3,8 @@ package service
 import (
 	"readcommend/internal/repository"
 	"readcommend/internal/service/dto"
+
+	"github.com/pkg/errors"
 )
 
 type BookService interface {
@@ -22,9 +24,11 @@ func NewBookService(repo repository.BookRepository) *BookServiceImpl {
 }
 
 func (s *BookServiceImpl) GetBooks(authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]dto.Book, error) {
+	// Future work: verify that authors and genres are valid
+
 	books, err := s.repo.GetBooks(authors, genres, minPages, maxPages, minYear, maxYear, limit)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "failed to get books")
 	}
 
 	result := make([]dto.Book, len(books))
@@ -38,7 +42,7 @@ func (s *BookServiceImpl) GetBooks(authors, genres []int, minPages, maxPages, mi
 func (s *BookServiceImpl) GetAuthors(search string, limit int) ([]dto.Author, error) {
 	authors, err := s.repo.GetAuthors(search, limit)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "failed to get authors")
 	}
 
 	result := make([]dto.Author, len(authors))
@@ -52,7 +56,7 @@ func (s *BookServiceImpl) GetAuthors(search string, limit int) ([]dto.Author, er
 func (s *BookServiceImpl) GetGenres() ([]dto.Genre, error) {
 	genres, err := s.repo.GetGenres()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "failed to get genres")
 	}
 
 	result := make([]dto.Genre, len(genres))
@@ -66,7 +70,7 @@ func (s *BookServiceImpl) GetGenres() ([]dto.Genre, error) {
 func (s *BookServiceImpl) GetSizes() ([]dto.Size, error) {
 	sizes, err := s.repo.GetSizes()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "failed to get sizes")
 	}
 
 	result := make([]dto.Size, len(sizes))
@@ -80,7 +84,7 @@ func (s *BookServiceImpl) GetSizes() ([]dto.Size, error) {
 func (s *BookServiceImpl) GetEras() ([]dto.Era, error) {
 	eras, err := s.repo.GetEras()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "failed to get eras")
 	}
 
 	result := make([]dto.Era, len(eras))

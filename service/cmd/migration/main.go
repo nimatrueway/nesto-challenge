@@ -3,9 +3,11 @@ package main
 import (
 	"database/sql"
 	"embed"
+
+	"readcommend/internal/bootstrap"
+
 	_ "github.com/jackc/pgx/v5"
 	"github.com/pressly/goose/v3"
-	"readcommend/internal/bootstrap"
 )
 
 //go:embed scripts/*.sql
@@ -19,19 +21,19 @@ func main() {
 	}
 
 	// setup database
-	db, err := sql.Open("pgx", config.Database.Dns)
+	database, err := sql.Open("pgx", config.Database.URL)
 	if err != nil {
 		panic(err)
 	}
+	goose.SetBaseFS(embedMigrations)
 
 	// setup goose
-	goose.SetBaseFS(embedMigrations)
 	if err := goose.SetDialect("postgres"); err != nil {
 		panic(err)
 	}
 
 	// run scripts
-	if err := goose.Up(db, "scripts"); err != nil {
+	if err := goose.Up(database, "scripts"); err != nil {
 		panic(err)
 	}
 }

@@ -1,11 +1,12 @@
 database:
-    dsn: "host=localhost port=5432 user=postgres password=password123 dbname=readcommend sslmode=disable"
-    max_connections: 10
-    max_connection_idle_time: 5m
+  url: "postgresql://postgres:password123@localhost:5432/readcommend?sslmode=disable"
+  max_connections: 10
+  max_connection_idle_time: 5m
 
 log:
-    level: debug
+  level: debug
 
 server:
-    cors_allowed_origins: [ "http://localhost:8080" ]
-    bind: :5001
+  cors_allowed_origins: [ "http://localhost:8080" ]
+  request_read_header_timeout: 5s
+  bind: :5001
