@@ -19,6 +19,7 @@ paths:
         Gets list of books, ordered by rank from best to worst rated, with optional filters. Multiple
         filters can be specified: author(s), genre(s), min/max number of pages, min/max published date,
         as well as maximum number of results.
+        If not maximum number of results is specified (limit), it will default to 100.
       operationId: GetBooks
       parameters:
         - name: authors
@@ -28,6 +29,7 @@ paths:
             Comma-delimited list of numeric author IDs. If multiple IDs are specified, the results will
             include the union of all given authors, intersected with criteria of other types, if any.
             When omitted, results will not be filtered by author.
+            A maximum of 100 author ids are allowed to be specified.
           example: 123,456,789
           schema:
             type: string
@@ -81,10 +83,11 @@ paths:
           in: query
           required: false
           description: |
-            Inclusive maximum number of results to return (defaults to all results).
+            Inclusive maximum number of results to return (defaults to 100 results).
           schema:
             type: integer
             minimum: 1
+            maximum: 100
       responses:
         200:
           description: Json list of books
@@ -133,7 +136,18 @@ paths:
         Gets list of all authors. As this list would typically be quite huge in a
         real production dataset, an important improvement would be to dynamically
         query authors by first few characters as user is typing.
+        This endpoint will return a maximum of 100 authors.
       operationId: GetAuthors
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: |
+            Inclusive maximum number of results to return (defaults to 100 results).
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
       responses:
         200:
           description: Json list of authors

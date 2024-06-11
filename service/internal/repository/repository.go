@@ -7,7 +7,7 @@ import (
 
 type BookRepository interface {
 	GetBooks(authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]model.Book, error)
-	GetAuthors() ([]model.Author, error)
+	GetAuthors(limit int) ([]model.Author, error)
 	GetGenres() ([]model.Genre, error)
 	GetSizes() ([]model.Size, error)
 	GetEras() ([]model.Era, error)
@@ -55,9 +55,17 @@ func (r *BookRepositoryImpl) GetBooks(authors, genres []int, minPages, maxPages,
 	return books, err
 }
 
-func (r *BookRepositoryImpl) GetAuthors() ([]model.Author, error) {
+func (r *BookRepositoryImpl) GetAuthors(limit int) ([]model.Author, error) {
 	var authors []model.Author
-	err := r.db.Find(&authors).Error
+
+	query := r.db
+
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+
+	err := query.Find(&authors).Error
+
 	return authors, err
 }
 

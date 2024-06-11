@@ -22,13 +22,28 @@ type BookParams struct {
 	MaxPages int    `form:"max-pages" binding:"omitempty,min=1,max=10000"`
 	MinYear  int    `form:"min-year" binding:"omitempty,min=1800,max=2100"`
 	MaxYear  int    `form:"max-year" binding:"omitempty,min=1800,max=2100"`
-	Limit    int    `form:"limit" binding:"omitempty,min=1"`
+	Limit    int    `form:"limit,default=100" binding:"omitempty,min=1,max=100"`
 }
 
 func (s *Controller) GetBooks(c *gin.Context) {
 	var params BookParams
 	if err := c.ShouldBindQuery(&params); err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
+		return
+	}
+
+	if len(params.Authors.value) > 100 {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Message: "only fewer that 100 authors are allowed to be used as filter"})
+		return
+	}
+
+	if params.MinPages > params.MaxPages {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Message: "min-pages must be less than or equal to max-pages"})
+		return
+	}
+
+	if params.MinYear > params.MaxYear {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Message: "min-year must be less than or equal to max-year"})
 		return
 	}
 
@@ -41,8 +56,18 @@ func (s *Controller) GetBooks(c *gin.Context) {
 	c.JSON(http.StatusOK, books)
 }
 
+type AuthorParams struct {
+	Limit  int    `binding:"omitempty,min=1,max=100" form:"limit,default=100"`
+}
+
 func (s *Controller) GetAuthors(c *gin.Context) {
-	authors, err := s.service.GetAuthors()
+	var params AuthorParams
+	if err := c.ShouldBindQuery(&params); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
+		return
+	}
+
+	authors, err := s.service.GetAuthors(params.Limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "failed to get authors"})
 		return
