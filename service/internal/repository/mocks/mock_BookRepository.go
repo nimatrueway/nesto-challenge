@@ -21,9 +21,9 @@ func (_m *MockBookRepository) EXPECT() *MockBookRepository_Expecter {
 	return &MockBookRepository_Expecter{mock: &_m.Mock}
 }
 
-// GetAuthors provides a mock function with given fields:
-func (_m *MockBookRepository) GetAuthors() ([]model.Author, error) {
-	ret := _m.Called()
+// GetAuthors provides a mock function with given fields: search, limit
+func (_m *MockBookRepository) GetAuthors(search string, limit int) ([]model.Author, error) {
+	ret := _m.Called(search, limit)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetAuthors")
@@ -31,19 +31,19 @@ func (_m *MockBookRepository) GetAuthors() ([]model.Author, error) {
 
 	var r0 []model.Author
 	var r1 error
-	if rf, ok := ret.Get(0).(func() ([]model.Author, error)); ok {
-		return rf()
+	if rf, ok := ret.Get(0).(func(string, int) ([]model.Author, error)); ok {
+		return rf(search, limit)
 	}
-	if rf, ok := ret.Get(0).(func() []model.Author); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(string, int) []model.Author); ok {
+		r0 = rf(search, limit)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]model.Author)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(string, int) error); ok {
+		r1 = rf(search, limit)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -57,13 +57,15 @@ type MockBookRepository_GetAuthors_Call struct {
 }
 
 // GetAuthors is a helper method to define mock.On call
-func (_e *MockBookRepository_Expecter) GetAuthors() *MockBookRepository_GetAuthors_Call {
-	return &MockBookRepository_GetAuthors_Call{Call: _e.mock.On("GetAuthors")}
+//   - search string
+//   - limit int
+func (_e *MockBookRepository_Expecter) GetAuthors(search interface{}, limit interface{}) *MockBookRepository_GetAuthors_Call {
+	return &MockBookRepository_GetAuthors_Call{Call: _e.mock.On("GetAuthors", search, limit)}
 }
 
-func (_c *MockBookRepository_GetAuthors_Call) Run(run func()) *MockBookRepository_GetAuthors_Call {
+func (_c *MockBookRepository_GetAuthors_Call) Run(run func(search string, limit int)) *MockBookRepository_GetAuthors_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run()
+		run(args[0].(string), args[1].(int))
 	})
 	return _c
 }
@@ -73,7 +75,7 @@ func (_c *MockBookRepository_GetAuthors_Call) Return(_a0 []model.Author, _a1 err
 	return _c
 }
 
-func (_c *MockBookRepository_GetAuthors_Call) RunAndReturn(run func() ([]model.Author, error)) *MockBookRepository_GetAuthors_Call {
+func (_c *MockBookRepository_GetAuthors_Call) RunAndReturn(run func(string, int) ([]model.Author, error)) *MockBookRepository_GetAuthors_Call {
 	_c.Call.Return(run)
 	return _c
 }
