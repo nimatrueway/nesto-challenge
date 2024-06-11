@@ -9,9 +9,10 @@ import (
 
 type Config struct {
 	Database struct {
-		URL             string        `mapstructure:"url"`
-		MaxConns        int           `mapstructure:"max_connections"`
-		MaxConnIdleTime time.Duration `mapstructure:"max_connection_idle_time"`
+		URL                string        `mapstructure:"url"`
+		MaxConns           int           `mapstructure:"max_connections"`
+		MaxConnIdleTime    time.Duration `mapstructure:"max_connection_idle_time"`
+		SlowQueryThreshold time.Duration `mapstructure:"slow_query_threshold"`
 	} `mapstructure:"database"`
 	Log struct {
 		Level string `mapstructure:"level"`

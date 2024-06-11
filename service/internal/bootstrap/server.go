@@ -35,7 +35,10 @@ func Run() {
 	slog.SetDefault(logger)
 
 	// configure gorm
-	gormLoggerOpts := []slogGorm.Option{slogGorm.SetLogLevel(slogGorm.DefaultLogType, slog.LevelDebug)}
+	gormLoggerOpts := []slogGorm.Option{
+		slogGorm.SetLogLevel(slogGorm.DefaultLogType, slog.LevelDebug),
+		slogGorm.WithSlowThreshold(config.Database.SlowQueryThreshold),
+	}
 	if logLevel <= slog.LevelDebug {
 		gormLoggerOpts = append(gormLoggerOpts, slogGorm.WithTraceAll())
 	}

@@ -2,6 +2,7 @@ database:
   url: "postgresql://postgres:password123@localhost:5432/readcommend?sslmode=disable"
   max_connections: 10
   max_connection_idle_time: 5m
+  slow_query_threshold: 1s
 
 log:
   level: debug
