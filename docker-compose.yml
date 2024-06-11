@@ -1,6 +1,19 @@
 # Starts PostgreSQL database and front-end app for development, assuming the back-end service will be built and run separately by developer
 version: "3"
 services:
+  backend:
+    build: service
+    environment:
+      "GIN_MODE": "debug"
+      "DATABASE.URL": "postgresql://postgres:password123@postgresql:5432/readcommend?sslmode=disable"
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./service/config.yaml:/app/config.yaml
+    depends_on:
+      postgresql:
+        condition: service_healthy
+
   app:
     build: app
     ports:
