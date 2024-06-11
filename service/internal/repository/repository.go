@@ -69,8 +69,8 @@ func (r *BookRepositoryImpl) GetAuthors(search string, limit int) ([]model.Autho
 		for i, word := range allWords {
 			allWords[i] = word + ":*"
 		}
-		search = strings.Join(allWords, " & ")
-		query = query.Where("to_tsvector('simple', first_name || ' ' || last_name) @@ to_tsquery(?)", search)
+		searchTerm := strings.Join(allWords, " & ")
+		query = query.Where("to_tsvector('simple', first_name || ' ' || last_name) @@ to_tsquery(?)", searchTerm)
 	}
 
 	if limit > 0 {
