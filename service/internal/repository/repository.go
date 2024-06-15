@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"regexp"
 	"strings"
 
@@ -10,11 +11,11 @@ import (
 )
 
 type BookRepository interface {
-	GetBooks(authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]model.Book, error)
-	GetAuthors(search string, limit int) ([]model.Author, error)
-	GetGenres() ([]model.Genre, error)
-	GetSizes() ([]model.Size, error)
-	GetEras() ([]model.Era, error)
+	GetBooks(ctx context.Context, authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]model.Book, error)
+	GetAuthors(ctx context.Context, search string, limit int) ([]model.Author, error)
+	GetGenres(ctx context.Context) ([]model.Genre, error)
+	GetSizes(ctx context.Context) ([]model.Size, error)
+	GetEras(ctx context.Context) ([]model.Era, error)
 }
 
 type BookRepositoryImpl struct {
@@ -27,10 +28,10 @@ func NewBookRepository(db *gorm.DB) *BookRepositoryImpl {
 	}
 }
 
-func (r *BookRepositoryImpl) GetBooks(authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]model.Book, error) {
+func (r *BookRepositoryImpl) GetBooks(ctx context.Context, authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]model.Book, error) {
 	var books []model.Book
 
-	query := r.db
+	query := r.db.WithContext(ctx)
 	query = query.InnerJoins("Genre").InnerJoins("Author")
 
 	if authors != nil {
@@ -59,10 +60,10 @@ func (r *BookRepositoryImpl) GetBooks(authors, genres []int, minPages, maxPages,
 	return books, err
 }
 
-func (r *BookRepositoryImpl) GetAuthors(search string, limit int) ([]model.Author, error) {
+func (r *BookRepositoryImpl) GetAuthors(ctx context.Context, search string, limit int) ([]model.Author, error) {
 	var authors []model.Author
 
-	query := r.db
+	query := r.db.WithContext(ctx)
 
 	if search != "" {
 		allWords := regexp.MustCompile(`\S+`).FindAllString(strings.ToLower(search), -1)
@@ -82,20 +83,23 @@ func (r *BookRepositoryImpl) GetAuthors(search string, limit int) ([]model.Autho
 	return authors, err
 }
 
-func (r *BookRepositoryImpl) GetGenres() ([]model.Genre, error) {
+func (r *BookRepositoryImpl) GetGenres(ctx context.Context) ([]model.Genre, error) {
 	var genres []model.Genre
-	err := r.db.Find(&genres).Error
+	query := r.db.WithContext(ctx)
+	err := query.Find(&genres).Error
 	return genres, err
 }
 
-func (r *BookRepositoryImpl) GetSizes() ([]model.Size, error) {
+func (r *BookRepositoryImpl) GetSizes(ctx context.Context) ([]model.Size, error) {
 	var sizes []model.Size
-	err := r.db.Find(&sizes).Error
+	query := r.db.WithContext(ctx)
+	err := query.Find(&sizes).Error
 	return sizes, err
 }
 
-func (r *BookRepositoryImpl) GetEras() ([]model.Era, error) {
+func (r *BookRepositoryImpl) GetEras(ctx context.Context) ([]model.Era, error) {
 	var eras []model.Era
-	err := r.db.Find(&eras).Error
+	query := r.db.WithContext(ctx)
+	err := query.Find(&eras).Error
 	return eras, err
 }

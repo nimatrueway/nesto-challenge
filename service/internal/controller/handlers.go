@@ -48,7 +48,7 @@ func (s *Controller) GetBooks(c *gin.Context) {
 		return
 	}
 
-	books, err := s.service.GetBooks(params.Authors.value, params.Genres.value, params.MinPages, params.MaxPages, params.MinYear, params.MaxYear, params.Limit)
+	books, err := s.service.GetBooks(c, params.Authors.value, params.Genres.value, params.MinPages, params.MaxPages, params.MinYear, params.MaxYear, params.Limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "failed to find books"})
 		return
@@ -69,7 +69,7 @@ func (s *Controller) GetAuthors(c *gin.Context) {
 		return
 	}
 
-	authors, err := s.service.GetAuthors(params.Search, params.Limit)
+	authors, err := s.service.GetAuthors(c, params.Search, params.Limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "failed to get authors"})
 		return
@@ -79,7 +79,7 @@ func (s *Controller) GetAuthors(c *gin.Context) {
 }
 
 func (s *Controller) GetGenres(c *gin.Context) {
-	genres, err := s.service.GetGenres()
+	genres, err := s.service.GetGenres(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "failed to get genres"})
 		return
@@ -89,7 +89,7 @@ func (s *Controller) GetGenres(c *gin.Context) {
 }
 
 func (s *Controller) GetSizes(c *gin.Context) {
-	sizes, err := s.service.GetSizes()
+	sizes, err := s.service.GetSizes(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "failed to get sizes"})
 		return
@@ -99,7 +99,7 @@ func (s *Controller) GetSizes(c *gin.Context) {
 }
 
 func (s *Controller) GetEras(c *gin.Context) {
-	eras, err := s.service.GetEras()
+	eras, err := s.service.GetEras(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "failed to get eras"})
 		return

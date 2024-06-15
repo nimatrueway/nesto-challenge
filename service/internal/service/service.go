@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"readcommend/internal/repository"
 	"readcommend/internal/service/dto"
 
@@ -8,11 +9,11 @@ import (
 )
 
 type BookService interface {
-	GetBooks(authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]dto.Book, error)
-	GetAuthors(search string, limit int) ([]dto.Author, error)
-	GetGenres() ([]dto.Genre, error)
-	GetSizes() ([]dto.Size, error)
-	GetEras() ([]dto.Era, error)
+	GetBooks(ctx context.Context, authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]dto.Book, error)
+	GetAuthors(ctx context.Context, search string, limit int) ([]dto.Author, error)
+	GetGenres(ctx context.Context) ([]dto.Genre, error)
+	GetSizes(ctx context.Context) ([]dto.Size, error)
+	GetEras(ctx context.Context) ([]dto.Era, error)
 }
 
 type BookServiceImpl struct {
@@ -23,10 +24,10 @@ func NewBookService(repo repository.BookRepository) *BookServiceImpl {
 	return &BookServiceImpl{repo: repo}
 }
 
-func (s *BookServiceImpl) GetBooks(authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]dto.Book, error) {
+func (s *BookServiceImpl) GetBooks(ctx context.Context, authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]dto.Book, error) {
 	// Future work: verify that authors and genres are valid
 
-	books, err := s.repo.GetBooks(authors, genres, minPages, maxPages, minYear, maxYear, limit)
+	books, err := s.repo.GetBooks(ctx, authors, genres, minPages, maxPages, minYear, maxYear, limit)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to get books")
 	}
@@ -39,8 +40,8 @@ func (s *BookServiceImpl) GetBooks(authors, genres []int, minPages, maxPages, mi
 	return result, nil
 }
 
-func (s *BookServiceImpl) GetAuthors(search string, limit int) ([]dto.Author, error) {
-	authors, err := s.repo.GetAuthors(search, limit)
+func (s *BookServiceImpl) GetAuthors(ctx context.Context, search string, limit int) ([]dto.Author, error) {
+	authors, err := s.repo.GetAuthors(ctx, search, limit)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to get authors")
 	}
@@ -53,8 +54,8 @@ func (s *BookServiceImpl) GetAuthors(search string, limit int) ([]dto.Author, er
 	return result, nil
 }
 
-func (s *BookServiceImpl) GetGenres() ([]dto.Genre, error) {
-	genres, err := s.repo.GetGenres()
+func (s *BookServiceImpl) GetGenres(ctx context.Context) ([]dto.Genre, error) {
+	genres, err := s.repo.GetGenres(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to get genres")
 	}
@@ -67,8 +68,8 @@ func (s *BookServiceImpl) GetGenres() ([]dto.Genre, error) {
 	return result, nil
 }
 
-func (s *BookServiceImpl) GetSizes() ([]dto.Size, error) {
-	sizes, err := s.repo.GetSizes()
+func (s *BookServiceImpl) GetSizes(ctx context.Context) ([]dto.Size, error) {
+	sizes, err := s.repo.GetSizes(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to get sizes")
 	}
@@ -81,8 +82,8 @@ func (s *BookServiceImpl) GetSizes() ([]dto.Size, error) {
 	return result, nil
 }
 
-func (s *BookServiceImpl) GetEras() ([]dto.Era, error) {
-	eras, err := s.repo.GetEras()
+func (s *BookServiceImpl) GetEras(ctx context.Context) ([]dto.Era, error) {
+	eras, err := s.repo.GetEras(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to get eras")
 	}

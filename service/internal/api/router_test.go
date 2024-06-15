@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"github.com/stretchr/testify/mock"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -15,6 +16,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
 )
+
+var mockContext = mock.AnythingOfType("*gin.Context")
 
 type APIV1BooksTestSuite struct {
 	router     *gin.Engine
@@ -32,7 +35,7 @@ func (suite *APIV1BooksTestSuite) SetupTest() {
 }
 
 func (suite *APIV1BooksTestSuite) TestDefaults() {
-	suite.repository.EXPECT().GetBooks([]int(nil), []int(nil), 0, 0, 0, 0, 100).Return([]model.Book{
+	suite.repository.EXPECT().GetBooks(mockContext, []int(nil), []int(nil), 0, 0, 0, 0, 100).Return([]model.Book{
 		{
 			ID:            1,
 			Title:         "Book 1",
@@ -63,7 +66,7 @@ func (suite *APIV1BooksTestSuite) TestDefaults() {
 }
 
 func (suite *APIV1BooksTestSuite) TestValidParameters() {
-	suite.repository.EXPECT().GetBooks([]int{1, 2, 3}, []int{4, 5, 6}, 10, 100, 1900, 2000, 50).Return(nil, nil).Once()
+	suite.repository.EXPECT().GetBooks(mockContext, []int{1, 2, 3}, []int{4, 5, 6}, 10, 100, 1900, 2000, 50).Return(nil, nil).Once()
 
 	ctx := context.Background()
 	req, err := http.NewRequestWithContext(ctx, "GET", "/api/v1/books?authors=1,2,3&genres=4,5,6&min-pages=10&max-pages=100&min-year=1900&max-year=2000&limit=50", nil)

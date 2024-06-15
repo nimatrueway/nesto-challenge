@@ -35,7 +35,7 @@ func (suite *RepositoryTestSuite) SetupSuite() {
 }
 
 func (suite *RepositoryTestSuite) TestGetAllBooksRanked() {
-	books, err := suite.repository.GetBooks(nil, nil, 0, 0, 0, 0, 0)
+	books, err := suite.repository.GetBooks(context.Background(), nil, nil, 0, 0, 0, 0, 0)
 	suite.Require().NoError(err)
 	suite.Len(books, 58)
 	suite.Equal(model.Book{
@@ -60,55 +60,55 @@ func (suite *RepositoryTestSuite) TestGetAllBooksRanked() {
 
 func (suite *RepositoryTestSuite) TestGetBooksSingleConditional() {
 	suite.Run("get books of author #1", func() {
-		books, err := suite.repository.GetBooks([]int{1}, nil, 0, 0, 0, 0, 0)
+		books, err := suite.repository.GetBooks(context.Background(), []int{1}, nil, 0, 0, 0, 0, 0)
 		suite.Require().NoError(err)
 		suite.Len(books, 1)
 	})
 
 	suite.Run("get books of author #4", func() {
-		books, err := suite.repository.GetBooks([]int{4}, nil, 0, 0, 0, 0, 0)
+		books, err := suite.repository.GetBooks(context.Background(), []int{4}, nil, 0, 0, 0, 0, 0)
 		suite.Require().NoError(err)
 		suite.Len(books, 2)
 	})
 
 	suite.Run("get books of author #1 and #4", func() {
-		books, err := suite.repository.GetBooks([]int{1, 4}, nil, 0, 0, 0, 0, 0)
+		books, err := suite.repository.GetBooks(context.Background(), []int{1, 4}, nil, 0, 0, 0, 0, 0)
 		suite.Require().NoError(err)
 		suite.Len(books, 3)
 	})
 
 	suite.Run("get books of genre #1 and #2", func() {
-		books, err := suite.repository.GetBooks(nil, []int{1, 2}, 0, 0, 0, 0, 0)
+		books, err := suite.repository.GetBooks(context.Background(), nil, []int{1, 2}, 0, 0, 0, 0, 0)
 		suite.Require().NoError(err)
 		suite.Len(books, 6+11)
 	})
 
 	suite.Run("get books of min-page 1000", func() {
-		books, err := suite.repository.GetBooks(nil, nil, 875, 0, 0, 0, 0)
+		books, err := suite.repository.GetBooks(context.Background(), nil, nil, 875, 0, 0, 0, 0)
 		suite.Require().NoError(err)
 		suite.Len(books, 2)
 	})
 
 	suite.Run("get books of max-page 10", func() {
-		books, err := suite.repository.GetBooks(nil, nil, 0, 50, 0, 0, 0)
+		books, err := suite.repository.GetBooks(context.Background(), nil, nil, 0, 50, 0, 0, 0)
 		suite.Require().NoError(err)
 		suite.Len(books, 6)
 	})
 
 	suite.Run("get books of min-year 2020", func() {
-		books, err := suite.repository.GetBooks(nil, nil, 0, 0, 2020, 0, 0)
+		books, err := suite.repository.GetBooks(context.Background(), nil, nil, 0, 0, 2020, 0, 0)
 		suite.Require().NoError(err)
 		suite.Len(books, 2)
 	})
 
 	suite.Run("get books of max-year 10", func() {
-		books, err := suite.repository.GetBooks(nil, nil, 0, 0, 0, 1930, 0)
+		books, err := suite.repository.GetBooks(context.Background(), nil, nil, 0, 0, 0, 1930, 0)
 		suite.Require().NoError(err)
 		suite.Len(books, 1)
 	})
 
 	suite.Run("get a maximum of 5 books of all available", func() {
-		books, err := suite.repository.GetBooks(nil, nil, 0, 0, 0, 0, 5)
+		books, err := suite.repository.GetBooks(context.Background(), nil, nil, 0, 0, 0, 0, 5)
 		suite.Require().NoError(err)
 		suite.Len(books, 5)
 	})
@@ -116,13 +116,13 @@ func (suite *RepositoryTestSuite) TestGetBooksSingleConditional() {
 
 func (suite *RepositoryTestSuite) TestGetAllBooksMultiConditional() {
 	suite.Run("get books of books of author #1 and #4 intersect with genre #1 and #2", func() {
-		books, err := suite.repository.GetBooks([]int{1, 4}, []int{1, 2}, 0, 0, 0, 0, 0)
+		books, err := suite.repository.GetBooks(context.Background(), []int{1, 4}, []int{1, 2}, 0, 0, 0, 0, 0)
 		suite.Require().NoError(err)
 		suite.Len(books, 1)
 	})
 
 	suite.Run("get books of min-year 2000 limited to 5", func() {
-		books, err := suite.repository.GetBooks(nil, nil, 0, 0, 2000, 0, 5)
+		books, err := suite.repository.GetBooks(context.Background(), nil, nil, 0, 0, 2000, 0, 5)
 		suite.Require().NoError(err)
 		suite.Len(books, 5)
 		for _, book := range books {
@@ -133,55 +133,55 @@ func (suite *RepositoryTestSuite) TestGetAllBooksMultiConditional() {
 
 func (suite *RepositoryTestSuite) TestGetAuthors() {
 	suite.Run("get all authors", func() {
-		authors, err := suite.repository.GetAuthors("", 0)
+		authors, err := suite.repository.GetAuthors(context.Background(), "", 0)
 		suite.Require().NoError(err)
 		suite.Len(authors, 41)
 	})
 	suite.Run("find 'Robert Plimpton' and 'Robert Milofsky' by searching 'rob'", func() {
-		authors, err := suite.repository.GetAuthors("rob", 0)
+		authors, err := suite.repository.GetAuthors(context.Background(), "rob", 0)
 		suite.Require().NoError(err)
 		suite.Len(authors, 2)
 	})
 
 	suite.Run("find one of 'Robert Plimpton' and 'Robert Milofsky' by searching 'rob' and limiting results to 1", func() {
-		authors, err := suite.repository.GetAuthors("rob", 1)
+		authors, err := suite.repository.GetAuthors(context.Background(), "rob", 1)
 		suite.Require().NoError(err)
 		suite.Len(authors, 1)
 	})
 
 	suite.Run("find 'Robert Plimpton' by searching 'rob pli'", func() {
-		authors, err := suite.repository.GetAuthors("rob pli", 0)
+		authors, err := suite.repository.GetAuthors(context.Background(), "rob pli", 0)
 		suite.Require().NoError(err)
 		suite.Len(authors, 1)
 	})
 
 	suite.Run("find 'Robert Plimpton' by searching 'pli rob'", func() {
-		authors, err := suite.repository.GetAuthors("pli rob", 0)
+		authors, err := suite.repository.GetAuthors(context.Background(), "pli rob", 0)
 		suite.Require().NoError(err)
 		suite.Len(authors, 1)
 	})
 
 	suite.Run("find 'Robert Plimpton' by searching 'pli'", func() {
-		authors, err := suite.repository.GetAuthors("pli", 0)
+		authors, err := suite.repository.GetAuthors(context.Background(), "pli", 0)
 		suite.Require().NoError(err)
 		suite.Len(authors, 1)
 	})
 }
 
 func (suite *RepositoryTestSuite) TestGetGenres() {
-	genres, err := suite.repository.GetGenres()
+	genres, err := suite.repository.GetGenres(context.Background())
 	suite.Require().NoError(err)
 	suite.Len(genres, 8)
 }
 
 func (suite *RepositoryTestSuite) TestGetSizes() {
-	sizes, err := suite.repository.GetSizes()
+	sizes, err := suite.repository.GetSizes(context.Background())
 	suite.Require().NoError(err)
 	suite.Len(sizes, 7)
 }
 
 func (suite *RepositoryTestSuite) TestGetEras() {
-	eras, err := suite.repository.GetEras()
+	eras, err := suite.repository.GetEras(context.Background())
 	suite.Require().NoError(err)
 	suite.Len(eras, 3)
 }
