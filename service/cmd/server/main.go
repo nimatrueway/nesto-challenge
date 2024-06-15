@@ -5,5 +5,8 @@ import (
 )
 
 func main() {
-	bootstrap.Run()
+	err := bootstrap.Run()
+	if err != nil {
+		panic(err)
+	}
 }

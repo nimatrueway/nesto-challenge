@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"github.com/pkg/errors"
 	"log"
 	"log/slog"
 	"net/http"
@@ -19,17 +20,17 @@ import (
 	"gorm.io/gorm/schema"
 )
 
-func Run() {
+func Run() error {
 	// load yaml configuration
 	config, err := LoadConfig()
 	if err != nil {
-		log.Panicf("Unable to load configuration: %#v", err)
+		return errors.Wrapf(err, "Unable to load configuration.")
 	}
 
 	// configure logger
 	var logLevel slog.Level
 	if err := logLevel.UnmarshalText([]byte(config.Log.Level)); err != nil {
-		log.Panicf("Unable to parse log level: %#v", err)
+		return errors.Wrapf(err, "Unable to parse log level: %#v", err)
 	}
 	logger := slog.New(tint.NewHandler(os.Stderr, &tint.Options{Level: logLevel, AddSource: true}))
 	slog.SetDefault(logger)
@@ -54,14 +55,14 @@ func Run() {
 
 	// configure database connection pool
 	sqlDB, err := db.DB()
+	if err != nil {
+		return errors.Wrapf(err, "failed to get sql.DB: %#v", err)
+	}
 	defer func() {
 		if err := sqlDB.Close(); err != nil {
 			log.Printf("failed to close sql.DB: %#v", err)
 		}
 	}()
-	if err != nil {
-		log.Panicf("failed to get sql.DB: %#v", err)
-	}
 	sqlDB.SetMaxOpenConns(config.Database.MaxConns)
 	sqlDB.SetConnMaxIdleTime(config.Database.MaxConnIdleTime)
 
@@ -80,6 +81,8 @@ func Run() {
 	slog.Info("Starting server", slog.String("address", config.Server.Host))
 
 	if err := httpServer.ListenAndServe(); err != nil {
-		log.Panicf("failed to start server: %#v", err)
+		return errors.Wrapf(err, "failed to start server: %#v", err)
 	}
+
+	return nil
 }
