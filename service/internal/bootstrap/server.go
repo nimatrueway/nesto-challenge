@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-
 	"readcommend/internal/api"
 	"readcommend/internal/controller"
 	"readcommend/internal/repository"
@@ -67,8 +66,8 @@ func Run() error {
 	sqlDB.SetConnMaxIdleTime(config.Database.MaxConnIdleTime)
 
 	// instantiate router
-	bookRepo := repository.NewBookRepository(db)
-	bookService := service.NewBookService(bookRepo)
+	var bookRepo service.BookRepository = repository.NewBookRepository(db)
+	var bookService controller.BookService = service.NewBookService(bookRepo)
 	server := controller.NewController(bookService)
 	router := api.NewRouter(server, []gin.HandlerFunc{api.CORSMiddleware(config.Server.CorsAllowedOrigins)})
 

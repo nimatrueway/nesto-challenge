@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"log"
+	"readcommend/internal/service"
 	"testing"
 
 	"readcommend/internal/repository/model"
@@ -20,7 +21,7 @@ import (
 
 type RepositoryTestSuite struct {
 	db         *gorm.DB
-	repository BookRepository
+	repository service.BookRepository
 	suite.Suite
 }
 

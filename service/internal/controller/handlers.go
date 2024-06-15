@@ -1,18 +1,26 @@
 package controller
 
 import (
+	"context"
 	"net/http"
-
-	"readcommend/internal/service"
+	"readcommend/internal/service/dto"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Controller struct {
-	service service.BookService
+type BookService interface {
+	GetBooks(ctx context.Context, authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]dto.Book, error)
+	GetAuthors(ctx context.Context, search string, limit int) ([]dto.Author, error)
+	GetGenres(ctx context.Context) ([]dto.Genre, error)
+	GetSizes(ctx context.Context) ([]dto.Size, error)
+	GetEras(ctx context.Context) ([]dto.Era, error)
 }
 
-func NewController(service service.BookService) *Controller {
+type Controller struct {
+	service BookService
+}
+
+func NewController(service BookService) *Controller {
 	return &Controller{service: service}
 }
 

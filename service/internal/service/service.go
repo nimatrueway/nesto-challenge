@@ -2,25 +2,25 @@ package service
 
 import (
 	"context"
-	"readcommend/internal/repository"
+	"readcommend/internal/repository/model"
 	"readcommend/internal/service/dto"
 
 	"github.com/pkg/errors"
 )
 
-type BookService interface {
-	GetBooks(ctx context.Context, authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]dto.Book, error)
-	GetAuthors(ctx context.Context, search string, limit int) ([]dto.Author, error)
-	GetGenres(ctx context.Context) ([]dto.Genre, error)
-	GetSizes(ctx context.Context) ([]dto.Size, error)
-	GetEras(ctx context.Context) ([]dto.Era, error)
+type BookRepository interface {
+	GetBooks(ctx context.Context, authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]model.Book, error)
+	GetAuthors(ctx context.Context, search string, limit int) ([]model.Author, error)
+	GetGenres(ctx context.Context) ([]model.Genre, error)
+	GetSizes(ctx context.Context) ([]model.Size, error)
+	GetEras(ctx context.Context) ([]model.Era, error)
 }
 
 type BookServiceImpl struct {
-	repo repository.BookRepository
+	repo BookRepository
 }
 
-func NewBookService(repo repository.BookRepository) *BookServiceImpl {
+func NewBookService(repo BookRepository) *BookServiceImpl {
 	return &BookServiceImpl{repo: repo}
 }
 

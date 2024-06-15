@@ -10,14 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type BookRepository interface {
-	GetBooks(ctx context.Context, authors, genres []int, minPages, maxPages, minYear, maxYear, limit int) ([]model.Book, error)
-	GetAuthors(ctx context.Context, search string, limit int) ([]model.Author, error)
-	GetGenres(ctx context.Context) ([]model.Genre, error)
-	GetSizes(ctx context.Context) ([]model.Size, error)
-	GetEras(ctx context.Context) ([]model.Era, error)
-}
-
 type BookRepositoryImpl struct {
 	db *gorm.DB
 }
